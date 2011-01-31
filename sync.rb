@@ -29,6 +29,18 @@ def upload(host, username,password,source, target)
     end
 end
 
+if File.exist?('.lock4autosyn')
+  p 'sync process is already running!This process will exit.'
+  exit
+end
+
+File.open('.lock4autosyn','w').close
+
+Kernel.at_exit do
+  p 'will delete lock file,exit.'
+  File.delete('.lock4autosyn')
+end
+
 stream = FSEvents::Stream.watch(source_dir) do |events|
     events.each do |event|
         event.modified_files.each do|modified|
