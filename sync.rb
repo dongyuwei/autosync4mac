@@ -2,7 +2,6 @@
 
 require 'rubygems'
 require 'fsevents'
-require 'net/ssh'
 require 'net/scp'
 require 'ruby-growl' #only macruby implemented growl lib supports click callback
 
