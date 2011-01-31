@@ -3,7 +3,7 @@
 require 'rubygems'
 require 'fsevents'
 require 'net/scp'
-require 'ruby-growl' #only macruby implemented growl lib supports click callback
+require 'ruby-growl'if RUBY_PLATFORM.downcase.include?("darwin") #only macruby implemented growl lib supports click callback
 
 host = "10.210.74.63"
 username = "my name"
@@ -21,8 +21,10 @@ def upload(host, username,password,source, target)
         p "#{source} modified,synced to server !"
         begin
             #config growl listen to network connection
-            g = Growl.new "127.0.0.1", "ruby-growl", ["ruby-growl Notification"]
-            g.notify "ruby-growl Notification", "File sync", "#{source} modified,synced to server !"
+            if Object.const_defined? :Growl
+              g = Growl.new "127.0.0.1", "ruby-growl", ["ruby-growl Notification"]
+              g.notify "ruby-growl Notification", "File sync", "#{source} modified,synced to server !"
+            end
         rescue
             p $!
         end
