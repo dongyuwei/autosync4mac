@@ -33,7 +33,7 @@ end
 stream = FSEvents::Stream.watch(source_dir) do |events|
     events.each do |event|
         event.modified_files.each do|modified|
-            if File.file? modified and not modified.include? '.svn'
+            if File.file? modified and not modified.include? '.svn' and not modified.include? '.hg' and not modified.include? '.git'
                 #p modified
                 target  = target_dir + modified.split(source_dir)[1]
                 #p target
