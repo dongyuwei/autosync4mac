@@ -42,9 +42,8 @@ end
 stream = FSEvents::Stream.watch(source_dir) do |events|
     events.each do |event|
         event.modified_files.each do|modified|
-            if File.file? modified and not modified.include? '.svn' and not modified.include? '.hg' and not modified.include? '.git'
-                target  = target_dir + modified.split(source_dir)[1]
-                upload(scp,modified, target)
+            if File.file? modified and modified.grep(/\.(git|svn|hg)/).length == 0 #ignore .svn .hg .git 
+                upload(scp,modified, target_dir + modified.split(source_dir)[1])
             end
         end
     end
