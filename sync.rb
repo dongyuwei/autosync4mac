@@ -13,8 +13,8 @@ scp = Net::SCP.start(host, username, :password => password) # reuse the connecti
 source_dir = '/Users/yuwei/workspace/miniblog'
 target_dir = '/data1/wwwroot/js.wcdn.cn/dev_js/miniblog'
 
-def upload(scp, source, target)
-  scp.upload!(source, target,:recursive => false)
+def upload(scp, source, target,recursive)
+  scp.upload!(source, target,:recursive => recursive)
   p "#{source} modified,synced to server !"
   begin
    #config growl listen to network connection
@@ -42,8 +42,8 @@ end
 stream = FSEvents::Stream.watch(source_dir) do |events|
     events.each do |event|
         event.modified_files.each do|modified|
-            if File.file? modified and modified.grep(/\.(git|svn|hg)/).length == 0 #ignore .svn .hg .git 
-                upload(scp,modified, target_dir + modified.split(source_dir)[1])
+            if (File.directory? modified or File.file? modified) and modified.grep(/\.(git|svn|hg)/).length == 0 #ignore .svn .hg .git
+                upload(scp,modified, target_dir + modified.split(source_dir)[1],File.directory? modified)
             end
         end
     end
