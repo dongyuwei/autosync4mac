@@ -8,18 +8,18 @@ require 'ruby-growl'if RUBY_PLATFORM.downcase.include?("darwin") #only macruby i
 host = "10.210.74.63"
 username = "my name"
 password = "my password"
-scp = Net::SCP.start(host, username, :password => password) # reuse the connection
+$_scp_ = Net::SCP.start(host, username, :password => password) # reuse the connection
 
 source_dir = '/Users/yuwei/workspace/miniblog'
 target_dir = '/data1/wwwroot/js.wcdn.cn/dev_js/miniblog'
 
-def upload(scp, source, target,recursive)
+def upload(source, target,recursive)
   begin
-    scp.upload!(source, target,:recursive => recursive)
+    $_scp_.upload!(source, target,:recursive => recursive)
     p "#{source} modified,synced to server !"
   rescue 
-    scp = Net::SCP.start(host, username, :password => password)
-    scp.upload!(source, target,:recursive => recursive)
+    $_scp_ = Net::SCP.start(host, username, :password => password)
+    $_scp_.upload!(source, target,:recursive => recursive)
     p "#{source} modified,synced to server !"
   end
 
@@ -54,7 +54,7 @@ stream = FSEvents::Stream.watch(source_dir) do |events|
     events.each do |event|
         event.modified_files.each do|modified|
             if (File.directory? modified or File.file? modified) and modified.grep(/\.(git|svn|hg)/).length == 0 #ignore .svn .hg .git
-                upload(scp,modified, target_dir + modified.split(source_dir)[1],File.directory?(modified) )
+                upload(modified, target_dir + modified.split(source_dir)[1],File.directory?(modified) )
             end
         end
     end
