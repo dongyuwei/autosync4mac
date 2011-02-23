@@ -5,10 +5,10 @@ require 'fsevents'
 require 'net/scp'
 require 'ruby-growl'if RUBY_PLATFORM.downcase.include?("darwin") #only macruby implemented growl lib supports click callback
 
-host = "10.210.74.63"
-username = "my name"
-password = "my password"
-$_scp_ = Net::SCP.start(host, username, :password => password) # reuse the connection
+$host = "10.210.74.63"
+$username = "my name"
+$password = "my password"
+$_scp_ = Net::SCP.start($host, $username, :password => $password) # reuse the connection
 
 source_dir = '/Users/yuwei/workspace/miniblog'
 target_dir = '/data1/wwwroot/js.wcdn.cn/dev_js/miniblog'
@@ -18,7 +18,7 @@ def upload(source, target,recursive)
     $_scp_.upload!(source, target,:recursive => recursive)
     p "#{source} modified,synced to server !"
   rescue 
-    $_scp_ = Net::SCP.start(host, username, :password => password)
+    $_scp_ = Net::SCP.start($host, $username, :password => $password)
     $_scp_.upload!(source, target,:recursive => recursive)
     p "#{source} modified,synced to server !"
   end
